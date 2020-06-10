@@ -1,5 +1,8 @@
+/** ENCODE: WINDOWS-936 **/
 #ifndef TIMER_H
 #define TIMER_H
+
+#pragma once
 
 #include"pagesReplacement.h"
 #include"windows.h"

@@ -1,3 +1,4 @@
+/** ENCODE: WINDOWS-936 **/
 #include"timer.h"
 
 // (1) 按键盘，每按一次可认为过一个时间单位

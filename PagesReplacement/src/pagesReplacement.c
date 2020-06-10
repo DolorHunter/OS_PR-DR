@@ -1,3 +1,4 @@
+/** ENCODE: WINDOWS-936 **/
 #include"pagesReplacement.h"
 
 void init_pages(Pages *pages, Info *info, PagesHistory *pagesHistory){
@@ -6,17 +7,18 @@ void init_pages(Pages *pages, Info *info, PagesHistory *pagesHistory){
         exit(-1);
     }
     (*pages).load = 0;
-    (*pages).missTime = 0;
     (*pages).capacity = (*info).pageSize;
     (*pages).pagePointer = 0;
     for (int i=0;i<MAX_CAPACITY;++i){
-        (*pages).page[i] = '0';
+        (*pages).page[i] = '\0';
         (*pages).pageTime[i] = 0;
         (*pages).postPageTime[i] = 0;
     }
+    (*pagesHistory).capacity = (*info).pageSize;
     (*pagesHistory).loc = 0;
+    (*pagesHistory).missTime = 0;
     for (int i=0;i<MAX_CAPACITY*MAX_LENGTH;++i){
-        (*pagesHistory).history[i] = '0';
+        (*pagesHistory).history[i] = '\0';
     }
 }
 
@@ -84,7 +86,7 @@ void savePagesHistory(Pages *pages, PagesHistory *pagesHistory){
 
 void prtPagesHistory(Pages *pages, PagesHistory *pagesHistory){
     for (int i=0;i<(*pagesHistory).loc;++i){
-        if (i%(*pages).capacity == 0)
+        if (i%(*pages).capacity == 0 && i>0)
             printf("\n");
         printf("%c",(*pagesHistory).history[i]);
     }
@@ -105,7 +107,7 @@ void fifo(Pages *pages, Info *info, PagesHistory *pagesHistory){
                 int timeLoc = maxTimeLoc(pages);
                 (*pages).page[timeLoc] = curPage;
                 (*pages).pageTime[timeLoc] = 0;
-                (*pages).missTime++;
+                (*pagesHistory).missTime++;
             }
         }
         else{
@@ -133,7 +135,7 @@ void lru(Pages *pages, Info *info, PagesHistory *pagesHistory){
                 int timeLoc = maxTimeLoc(pages);
                 (*pages).page[timeLoc] = curPage;
                 (*pages).pageTime[timeLoc] = 0;
-                (*pages).missTime++;
+                (*pagesHistory).missTime++;
             }
             else{
                 (*pages).pageTime[pageLoc] = 0;
@@ -164,7 +166,7 @@ void opt(Pages *pages, Info *info, PagesHistory *pagesHistory){
                 allPostTime(pages, info, loc);
                 int timeLoc = maxPostTimeLoc(pages);
                 (*pages).page[timeLoc] = curPage;
-                (*pages).missTime++;
+                (*pagesHistory).missTime++;
             }
         }
         else{
@@ -194,7 +196,7 @@ void clock(Pages *pages, Info *info, PagesHistory *pagesHistory){
                 (*pages).page[pointer] = curPage;
                 (*pages).pagePointer++;
                 (*pages).pagePointer %= (*pages).capacity;
-                (*pages).missTime++;
+                (*pagesHistory).missTime++;
             }
         }
         else{
@@ -206,9 +208,6 @@ void clock(Pages *pages, Info *info, PagesHistory *pagesHistory){
         curPage = (*info).pageInfo[loc];
     }
 }
-
-
-
 
 void casePagesPlacement(int caseNum, Pages *pages, Info *info, PagesHistory *pagesHistory){
     init_pages(pages, info, pagesHistory);
@@ -250,6 +249,8 @@ int main(){
     PagesHistory pagesHistory;
     casePagesPlacement(4, &pages, &info, &pagesHistory);
     prtPagesHistory(&pages,&pagesHistory);
+    printf("\n%d\t%d\t",pagesHistory.missTime,pagesHistory.loc);
     return 0;
 }
 */
+
