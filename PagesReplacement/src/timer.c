@@ -1,55 +1,57 @@
-/** ENCODE: WINDOWS-936 **/
-#include"timer.h"
+#include "timer.h"
 
-// (1) °´¼üÅÌ£¬Ã¿°´Ò»´Î¿ÉÈÏÎª¹ıÒ»¸öÊ±¼äµ¥Î»
-void timer1(int time, int pageNum){
+void init_timer(int time){
+    time = 0;
+}
+
+void timer1(PagesHistory *pagesHistory, int time){
     char input;
+    int pageNum = (*pagesHistory).loc / (*pagesHistory).capacity;
     while (time <= pageNum){
         scanf("%c",&input);
         if (input == '\n'){
+            prtCurPage(pagesHistory, time);
             time += 1;
         }
     }
 }
 
-// (2) ÏìÓ¦ WM_TIMER
-void timer2(int time, int pageNum){
+void timer2(PagesHistory *pagesHistory, int time){
     MSG msg;
-	SetTimer(NULL,1,1000,NULL);  // Ã¿¸ôÒ»ÃëÖÓ´¥·¢Ò»´Î
+    int pageNum = (*pagesHistory).loc / (*pagesHistory).capacity;
+    SetTimer(NULL,1,1000,NULL);  // æ¯ç§’è§¦å‘ä¸€æ¬¡
     while(GetMessage(&msg, NULL, 0, 0)){
+        prtCurPage(pagesHistory, time);
         time++;
         if(time >= pageNum)
             break;
-        }
-	KillTimer(NULL,1);   //Ïú»Ù¶¨Ê±Æ÷
+    }
+    KillTimer(NULL,1);
 }
 
-void caseTimer(int caseNum, int time, int pageNum){
+void chooseTimer(PagesHistory *pagesHistory, int caseNum, int time){
     if (caseNum < 1 || caseNum > 2){
-        printf("Ê±¼äÁ÷ÊÅÑ¡Ôñ´íÎó!!ÇëÖØĞÂÊäÈë!!\n");
+        printf("Timer Case (%d) Error!! Plz choose again!!\n",caseNum);
         scanf("%d",&caseNum);
-        caseTimer(caseNum, time, pageNum);
+        chooseTimer(pagesHistory, caseNum, time);
     }
     else{
         switch (caseNum){
-        case 1:
-            printf("Ê±¼äÁ÷ÊÅ·½Ê½: °´»Ø³µ£¬Ã¿°´Ò»´Î¿ÉÈÏÎª¹ıÒ»¸öÊ±¼äµ¥Î»\n");
-            timer1(time, pageNum);
-            break;
-        case 2:
-            printf("Ê±¼äÁ÷ÊÅ·½Ê½: ÏìÓ¦ WM_TIMER\n");
-            timer2(time, pageNum);
+            case 1:
+                printf("Timer Case: TYPING ENTER\n");
+                timer1(pagesHistory, time);
+                break;
+            case 2:
+                printf("Timer Case: WM_TIMER\n");
+                timer2(pagesHistory, time);
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
+        int missTime = (*pagesHistory).missTime;
+        int pagesNum = (*pagesHistory).loc / (*pagesHistory).capacity;
+        float missRate = (float)missTime / (float)pagesNum;
+        printf("missTime:%d\tpagesNum%d\tmissRate%f",missTime,pagesNum, missRate);
     }
 }
-
-
-/// test
-/*
-int main(){
-    caseTimer(3,0,3);
-}
-*/

@@ -1,11 +1,6 @@
-/** ENCODE: WINDOWS-936 **/
-#include"pagesReplacement.h"
+#include "pagesReplacement.h"
 
 void init_pages(Pages *pages, Info *info, PagesHistory *pagesHistory){
-    if ((*info).pageSize > (*pages).capacity){
-        printf("输入数据非法!!读入页面过大!!");
-        exit(-1);
-    }
     (*pages).load = 0;
     (*pages).capacity = (*info).pageSize;
     (*pages).pagePointer = 0;
@@ -84,14 +79,23 @@ void savePagesHistory(Pages *pages, PagesHistory *pagesHistory){
     (*pagesHistory).loc += (*pages).capacity;
 }
 
-void prtPagesHistory(Pages *pages, PagesHistory *pagesHistory){
+void prtCurPage(PagesHistory *pagesHistory, int time){
+    char elem;
+    int capacity = (*pagesHistory).capacity;
+    for (int i=0; i<capacity; ++i){
+        elem = (*pagesHistory).history[capacity*time+i];
+        printf("%c\t", elem);
+    }
+    printf("\n");
+}
+
+void prtPagesHistory(PagesHistory *pagesHistory){
     for (int i=0;i<(*pagesHistory).loc;++i){
-        if (i%(*pages).capacity == 0 && i>0)
+        if (i%(*pagesHistory).capacity == 0 && i>0)
             printf("\n");
         printf("%c",(*pagesHistory).history[i]);
     }
 }
-
 
 void fifo(Pages *pages, Info *info, PagesHistory *pagesHistory){
     int loc=0;
@@ -111,7 +115,7 @@ void fifo(Pages *pages, Info *info, PagesHistory *pagesHistory){
             }
         }
         else{
-            printf("装入数据非法!!装入大于页面容量!!");
+            printf("[ERROR] PageSize (%d) > Capacity!!",(*info).pageSize, (*pages).capacity);
             exit(-1);
         }
         allPagesTimePlus(pages);
@@ -142,7 +146,7 @@ void lru(Pages *pages, Info *info, PagesHistory *pagesHistory){
             }
         }
         else{
-            printf("装入数据非法!!装入大于页面容量!!");
+            printf("[ERROR] PageSize (%d) > Capacity!!",(*info).pageSize, (*pages).capacity);
             exit(-1);
         }
         allPagesTimePlus(pages);
@@ -170,7 +174,7 @@ void opt(Pages *pages, Info *info, PagesHistory *pagesHistory){
             }
         }
         else{
-            printf("装入数据非法!!装入大于页面容量!!");
+            printf("[ERROR] PageSize (%d) > Capacity!!",(*info).pageSize, (*pages).capacity);
             exit(-1);
         }
         loc++;
@@ -200,7 +204,7 @@ void clock(Pages *pages, Info *info, PagesHistory *pagesHistory){
             }
         }
         else{
-            printf("装入数据非法!!装入大于页面容量!!");
+            printf("[ERROR] PageSize (%d) > Capacity!!",(*info).pageSize, (*pages).capacity);
             exit(-1);
         }
         loc++;
@@ -209,48 +213,33 @@ void clock(Pages *pages, Info *info, PagesHistory *pagesHistory){
     }
 }
 
-void casePagesPlacement(int caseNum, Pages *pages, Info *info, PagesHistory *pagesHistory){
-    init_pages(pages, info, pagesHistory);
+void chooseReplacement(int caseNum, Pages *pages, Info *info, PagesHistory *pagesHistory){
     if (caseNum < 1 || caseNum > 4){
-        printf("页面调度算法选择错误!!请重新输入!!\n");
+        printf("PagesReplacement Case (%d) Error!! Plz choose again!!\n",caseNum);
         scanf("%d",&caseNum);
-        casePagesPlacement(caseNum, pages, info, pagesHistory);
+        chooseReplacement(caseNum, pages, info, pagesHistory);
     }
     else{
         switch (caseNum){
-        case 1:
-            printf("页面调度算法: FIFO\n");
-            fifo(pages, info, pagesHistory);
-            break;
-        case 2:
-            printf("页面调度算法: LRU\n");
-            lru(pages, info, pagesHistory);
-            break;
-        case 3:
-            printf("页面调度算法: OPT\n");
-            opt(pages, info, pagesHistory);
-            break;
-        case 4:
-            printf("页面调度算法: CLOCK\n");
-            clock(pages, info, pagesHistory);
-            break;
+            case 1:
+                printf("PagesReplacement Algo: FIFO\n");
+                fifo(pages, info, pagesHistory);
+                break;
+            case 2:
+                printf("PagesReplacement Algo: LRU\n");
+                lru(pages, info, pagesHistory);
+                break;
+            case 3:
+                printf("PagesReplacement Algo: OPT\n");
+                opt(pages, info, pagesHistory);
+                break;
+            case 4:
+                printf("PagesReplacement Algo: CLOCK\n");
+                clock(pages, info, pagesHistory);
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
     }
 }
-
-/// test
-/*
-int main(){
-    Pages pages;
-    Info info = {3, "143125142145#"};
-    PagesHistory pagesHistory;
-    casePagesPlacement(4, &pages, &info, &pagesHistory);
-    prtPagesHistory(&pages,&pagesHistory);
-    printf("\n%d\t%d\t",pagesHistory.missTime,pagesHistory.loc);
-    return 0;
-}
-*/
-

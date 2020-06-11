@@ -1,15 +1,17 @@
-/** ENCODE: WINDOWS-936 **/
-#ifndef TIMER_H
-#define TIMER_H
+#ifndef PAGESREPLACEMENT_TIMER_H
+#define PAGESREPLACEMENT_TIMER_H
 
 #pragma once
 
-#include"pagesReplacement.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include"windows.h"
+#include "pagesReplacement.h"
 
-void timer1(int time, int pageNum);
-void timer2(int time, int pageNum);
+void init_timer(int time);
+void timer1(PagesHistory *pagesHistory, int time);
+void timer2(PagesHistory *pagesHistory, int time);
 
-void caseTimer(int caseNum, int time, int pageNum);
+void chooseTimer(PagesHistory *pagesHistory, int caseNum, int time);
 
-#endif // TIMER_H
+#endif //PAGESREPLACEMENT_TIMER_H

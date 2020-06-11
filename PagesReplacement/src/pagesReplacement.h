@@ -1,28 +1,28 @@
-/** ENCODE: WINDOWS-936 **/
-#ifndef PAGESREPLACEMENT_H
-#define PAGESREPLACEMENT_H
+#ifndef PAGESREPLACEMENT_PAGESREPLACEMENT_H
+#define PAGESREPLACEMENT_PAGESREPLACEMENT_H
 
 #pragma once
 
-#include"file.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 #define MAX_LENGTH 256
 #define MAX_CAPACITY 8
 
 typedef struct Pages{
-    int capacity;                    // 页面容量
-    int load;                        // 页面当前负载
-    char page[MAX_CAPACITY];         // 页面
-    int pagePointer;                 // 页面指针(CLOCK)
-    int pageTime[MAX_CAPACITY];      // 页面存在时间(FIFO/LRU)
-    int postPageTime[MAX_CAPACITY];  // 页面下次使用时间(OPT)
+    int capacity;                    // capacity
+    int load;                        // load
+    char page[MAX_CAPACITY];         // curPage
+    int pagePointer;                 // pointer(CLOCK)
+    int pageTime[MAX_CAPACITY];      // exist time(FIFO/LRU)
+    int postPageTime[MAX_CAPACITY];  // next time to use(OPT)
 }Pages;
 
 typedef struct PagesHistory{
-    int capacity;                           // 页面容量
-    int loc;                                // 指针位置(页面*容量)
-    int missTime;                           // 缺页次数
-    char history[MAX_CAPACITY*MAX_LENGTH];  // 历史记录
+    int capacity;                           // capacity
+    int loc;                                // pointer(capacity*pageNum)
+    int missTime;                           // missTime
+    char history[MAX_CAPACITY*MAX_LENGTH];  // history
 }PagesHistory;
 
 typedef struct Info{
@@ -37,12 +37,13 @@ int maxTimeLoc(Pages *pages);
 void allPostTime(Pages *pages, Info *info, int loc);
 int maxPostTimeLoc(Pages *pages);
 void savePagesHistory(Pages *pages, PagesHistory *pagesHistory);
-void prtPagesHistory(Pages *pages, PagesHistory *pagesHistory);
+void prtCurPage(PagesHistory *pagesHistory, int time);
+void prtPagesHistory(PagesHistory *pagesHistory);
 
 void fifo(Pages *pages, Info *Info, PagesHistory *pagesHistory);
 void lru(Pages *pages, Info *info, PagesHistory *pagesHistory);
 void opt(Pages *pages, Info *info, PagesHistory *pagesHistory);
 void clock(Pages *pages, Info *info, PagesHistory *pagesHistory);
-void casePagesPlacement(int caseNum, Pages *pages, Info *info, PagesHistory *pagesHistory);
+void chooseReplacement(int caseNum, Pages *pages, Info *info, PagesHistory *pagesHistory);
 
-#endif // PAGESREPLACEMENT_H
+#endif //PAGESREPLACEMENT_PAGESREPLACEMENT_H

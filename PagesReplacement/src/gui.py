@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from tkinter import Tk
 from tkinter import ttk
 from tkinter import messagebox
@@ -14,9 +15,11 @@ import tkinter as tk
 
 class MainWindows:
     def __init__(self, master):
-        self.timer = 0
-        self.pages_replacement = 0
+        self.time = 0
+        self.case_timer = 0
+        self.case_pages_replacement = 0
         self.start_style = 0
+
         self.button_frame = Frame(master)
         self.button_frame.pack()
         self.new_button = Button(self.button_frame, text="新建", command=self.init_all, width=9)
@@ -87,44 +90,44 @@ class MainWindows:
     def click_timer1(self):
         self.timer1_button['state'] = tk.DISABLED
         self.timer2_button['state'] = tk.NORMAL
-        self.timer = 1
+        self.case_timer = 1
 
     def click_timer2(self):
         self.timer2_button['state'] = tk.DISABLED
         self.timer1_button['state'] = tk.NORMAL
-        self.timer = 2
+        self.case_timer = 2
 
     def click_replacement1(self):
         self.replacement1_button['state'] = tk.DISABLED
         self.replacement2_button['state'] = tk.NORMAL
         self.replacement3_button['state'] = tk.NORMAL
         self.replacement4_button['state'] = tk.NORMAL
-        self.pages_replacement = 1
+        self.case_pages_replacement = 1
 
     def click_replacement2(self):
         self.replacement2_button['state'] = tk.DISABLED
         self.replacement1_button['state'] = tk.NORMAL
         self.replacement3_button['state'] = tk.NORMAL
         self.replacement4_button['state'] = tk.NORMAL
-        self.pages_replacement = 2
+        self.case_pages_replacement = 2
 
     def click_replacement3(self):
         self.replacement3_button['state'] = tk.DISABLED
         self.replacement1_button['state'] = tk.NORMAL
         self.replacement2_button['state'] = tk.NORMAL
         self.replacement4_button['state'] = tk.NORMAL
-        self.pages_replacement = 3
+        self.case_pages_replacement = 3
 
     def click_replacement4(self):
         self.replacement4_button['state'] = tk.DISABLED
         self.replacement1_button['state'] = tk.NORMAL
         self.replacement2_button['state'] = tk.NORMAL
         self.replacement3_button['state'] = tk.NORMAL
-        self.pages_replacement = 4
+        self.case_pages_replacement = 4
 
     def init_all(self):
-        self.timer = 0
-        self.pages_replacement = 0
+        self.case_timer = 0
+        self.case_pages_replacement = 0
         self.timer1_button['state'] = tk.NORMAL
         self.timer2_button['state'] = tk.NORMAL
         self.replacement1_button['state'] = tk.NORMAL
@@ -133,17 +136,17 @@ class MainWindows:
         self.start_style = 0
 
     def open_file(self):
-        init_all()
+        self.init_all()
         self.start_style = 1
 
     def reply_file(self):
-        init_all()
+        self.init_all()
         self.start_style = 2
         
     def show_replacement(self):
-        if timer == 1:
+        if self.timer == 1:
             pass
-        elif timer == 2:
+        elif self.timer == 2:
             pass
         else:
             messagebox.showwarning('时间流逝错误!!', '请选择一个时间流逝方法!!')
@@ -157,7 +160,7 @@ class MainWindows:
         else:
             messagebox.showwarning('页面置换错误!!', '请选择一个页面置换方法!!')
             print("[WARNING] PAGES REPLACEMENT ERROR!!")
-        show_replacement()
+        self.show_replacement()
 
     @staticmethod
     def help():
