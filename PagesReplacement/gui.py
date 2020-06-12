@@ -6,8 +6,8 @@ from tkinter import filedialog
 from tkinter import *
 import tkinter as tk
 from ctypes import *
-import time
 import datetime
+import time
 
 file = CDLL('./src/file.so')
 pages_replacement = CDLL('./src/pagesReplacement.so')
@@ -33,7 +33,6 @@ class MainWindows:
         self.pages_history = PagesHistory()
         self.info = Info()
         self.time = 0
-        self.tmp_time = 0
         self.case_timer = 0
         self.case_pages_replacement = 0
         self.start_style = 0
@@ -195,7 +194,6 @@ class MainWindows:
 
     def init_all(self):
         self.time = 0
-        self.tmp_time = 0
         self.case_timer = 0
         self.case_pages_replacement = 0
         self.timer1_button['state'] = tk.NORMAL
@@ -203,9 +201,18 @@ class MainWindows:
         self.replacement1_button['state'] = tk.NORMAL
         self.replacement2_button['state'] = tk.NORMAL
         self.replacement3_button['state'] = tk.NORMAL
+        self.replacement4_button['state'] = tk.NORMAL
+        self.enter_button['state'] = NORMAL
         self.start_style = 0
         self.replacement_column = 0
         self.filename = ""
+        self.init_pages_tree()
+        self.terminal_text.delete("1.0", "end")
+
+    def init_pages_tree(self):
+        items = self.pages_tree.get_children()
+        for item in items:
+            self.pages_tree.delete(item)
 
     def pick_replacement(self):
         cur_dt = datetime.datetime.now()
@@ -232,12 +239,16 @@ class MainWindows:
         self.start_style = 1
         self.pick_replacement()
         self.pick_timer()
-        #self.filename = filedialog.askopenfile() ##test
-        #self.filename = self.filename.name ##test
-        self.filename = "D:/workspace/OS_placeholder/PagesReplacement/data/FILE1" ##test
-        print(self.filename) ##test
-        file.readFile(self.info, c_char_p(self.filename.encode('utf-8')))
-        #file.readFile(self.info, self.filename)
+        self.filename = filedialog.askopenfile()
+        self.filename = self.filename.name
+        self.filename = ".\\data\\FILE1" ##test
+        file.readFile.restype = None
+        file.readFile.argtypes = [POINTER(Info), c_char_p]
+        c_filename = c_char_p(self.filename.encode('utf-8'))
+        file.readFile(self.info, c_filename)
+        print(self.info.pageSize, self.info.pageInfo)
+        pages_replacement.init_pages.restype = None
+        pages_replacement.init_pages.argtypes = [POINTER(Pages), POINTER(Info), POINTER(PagesHistory)]
         pages_replacement.init_pages(self.pages, self.info, self.pages_history)
 
     def replay_file(self):
@@ -245,13 +256,20 @@ class MainWindows:
         self.start_style = 2
         self.pick_replacement()
         self.pick_timer()
-        #self.filename = filedialog.askopenfile() ##test
-        #self.filename = self.filename.name ##test
-        self.filename = "D:/workspace/OS_placeholder/PagesReplacement/data/FILE1_REPLAY" ##test
-        print(self.filename) ##test
-        file.readReplayFile(self.pages_history, c_char_p(self.filename.encode('utf-8')))
-
+        self.filename = filedialog.askopenfile()
+        self.filename = self.filename.name
+        self.filename = ".\\data\\FILE1_REPLAY" ##test
+        file.readReplayFile.restype = None
+        file.readReplayFile.argtypes = [POINTER(PagesHistory), c_char_p]
+        c_filename = c_char_p(self.filename.encode('utf-8'))
+        file.readReplayFile(self.pages_history, c_filename)
+        
     def click_enter(self):
+        page_num = 0
+        if page_num:
+            page_num = int(self.pages_history.loc / self.pages_history.capacity)
+        if self.time > page_num:
+            self.enter_button['state'] = DISABLED
         input_command = self.input_entry.get()
         cur_dt = datetime.datetime.now()
         cur_time = "[{:2d}:{:2d}:{:2d}]".format(cur_dt.hour, cur_dt.minute, cur_dt.second)
@@ -259,39 +277,48 @@ class MainWindows:
         self.terminal_text.see(END)
         self.input_entry.delete(0, END)
         self.time += 1
+        self.insert_replacement()
 
     def insert_replacement(self):
-        if self.tmp_time != self.time:
-            values = []
-            capacity = self.pages_history.capacity
-            for i in capacity:
-                elem = self.pages_history.history[capacity*self.time+i]
-                values.extend(elem)
-            self.pages_tree.insert("", 0, values=values)
-            self.tmp_time = self.time
+        values = []
+        capacity = self.pages_history.capacity
+        for i in range(capacity):
+            elem = self.pages_history.history[capacity*self.time+i]
+            values.extend(elem)
+        self.pages_tree.insert("", 0, values=values)
+        self.tmp_time = self.time
+
+    def my_timer2(self):
+        page_num = 0
+        if self.pages_history.capacity:
+            page_num = int(self.pages_history.loc / self.pages_history.capacity)
+        tmp_time = self.time
+        while self.time < page_num:
+            #time.sleep(0.9)
+            timer2.ptimer2.restype = None
+            timer2.ptimer2.argtypes = [c_int]
+            timer2.ptimer2(self.time)
+            if tmp_time < self.time:
+                self.insert_replacement()
+                tmp_time = self.time
 
     def my_timer(self):
         if self.case_timer < 1 or self.case_timer > 2:
             messagebox.showwarning('时间流逝错误!!', '请选择一个时间流逝方法!!')
             print("[WARNING] TIMER ERROR!!")
-        page_num = 0
-        if self.pages_history.capacity:
-            page_num = int(self.pages_history.loc / self.pages_history.capacity)
-
-        while True:
-            if page_num < self.time:
-                break
-            if self.case_timer == 1:
-                self.insert_replacement()
-            elif self.case_timer == 2:
-                timer2._timer2(self.time)
-                self.insert_replacement()
+        if self.case_timer == 1:
+            # 按下Enter输出, 操作置于 self.click_enter()
+            pass
+        elif self.case_timer == 2:
+            self.my_timer2()
 
     def start(self):
         if self.case_pages_replacement < 1 or self.case_pages_replacement > 4:
             messagebox.showwarning('页面置换算法错误!!', '请选择一个页面置换算法!!')
             print("[WARNING] PAGES REPLACEMENT ALGO ERROR!!")
         if self.start_style == 1:
+            file.saveFile.restype = None
+            file.saveFile.argtypes = [POINTER(PagesHistory), c_char_p]
             file.saveFile(self.pages_history, self.filename)
             self.my_timer()
         elif self.start_style == 2:
@@ -299,7 +326,6 @@ class MainWindows:
         else:
             messagebox.showwarning('页面置换演示错误!!', '请选择一个页面置换演示方式!!')
             print("[WARNING] PAGES REPLACEMENT ERROR!!")
-        self.show_replacement()
 
     @staticmethod
     def help():

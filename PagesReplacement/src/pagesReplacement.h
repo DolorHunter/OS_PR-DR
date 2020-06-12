@@ -30,7 +30,7 @@ typedef struct Info{
     char pageInfo[MAX_LENGTH];
 }Info;
 
-void init_pages(Pages *ages, Info *info, PagesHistory *pagesHistory);
+void init_pages(Pages *pages, Info *info, PagesHistory *pagesHistory);
 int inPageLoc(Pages *pages, char elem);
 void allPagesTimePlus(Pages *pages);
 int maxTimeLoc(Pages *pages);
