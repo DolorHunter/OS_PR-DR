@@ -11,7 +11,7 @@ void timer1(PagesHistory *pagesHistory, int time){
         scanf("%c",&input);
         if (input == '\n'){
             prtCurPage(pagesHistory, time);
-            time += 1;
+            time++;
         }
     }
 }
