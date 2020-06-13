@@ -71,7 +71,10 @@ void saveFile(PagesHistory *pagesHistory, char *fileName){
     }
     for (int i=0;i<(*pagesHistory).loc;++i){
         ch = (*pagesHistory).history[i];
-        fputc(ch, fp);
+        if (isdigit(ch) || isalpha(ch))
+            fputc(ch, fp);
+        else
+            fputc('0', fp);
     }
     fputc('\n', fp);
     num = (*pagesHistory).capacity;
