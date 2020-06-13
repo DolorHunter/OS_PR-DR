@@ -14,16 +14,16 @@ pages_replacement = CDLL('./src/pagesReplacement.so')
 
 
 class Pages(Structure):
-    _fields_ = [("capacity", c_int), ("load", c_int), ("page", c_char*8),
-                ("pagePointer", c_int), ("pageTime", c_int*8), ("postPageTime", c_int*8)]
+    _fields_ = [("capacity", c_int), ("load", c_int), ("page", c_char * 8),
+                ("pagePointer", c_int), ("pageTime", c_int * 8), ("postPageTime", c_int * 8)]
 
 
 class PagesHistory(Structure):
-    _fields_ = [("capacity", c_int), ("loc", c_int), ("missTime", c_int), ("history", c_char*2048)]
+    _fields_ = [("capacity", c_int), ("loc", c_int), ("missTime", c_int), ("history", c_char * 2048)]
 
 
 class Info(Structure):
-    _fields_ = [("pageSize", c_int), ("pageInfo", c_char*256)]
+    _fields_ = [("pageSize", c_int), ("pageInfo", c_char * 256)]
 
 
 class MainWindows:
@@ -263,12 +263,18 @@ class MainWindows:
         file.readReplayFile.argtypes = [POINTER(PagesHistory), c_char_p]
         c_filename = c_char_p(self.filename.encode('utf-8'))
         file.readReplayFile(self.pages_history, c_filename)
-        
+
     def click_enter(self):
         if self.pages_history.capacity:
             page_num = int(self.pages_history.loc / self.pages_history.capacity)
-            if self.time+1 >= page_num > 0:
+            if self.time + 1 >= page_num > 0:
                 self.enter_button['state'] = DISABLED
+                page_num = int(self.pages_history.loc / self.pages_history.capacity)
+                miss_rate = self.pages_history.missTime / page_num
+                messagebox.showinfo('页面置换完成',
+                                    '页面置换次数{}, 缺页次数{}, 缺页率{:.3f}'.format(page_num,
+                                                                         self.pages_history.missTime,
+                                                                         miss_rate))
         input_command = self.input_entry.get()
         cur_dt = datetime.datetime.now()
         cur_time = "[{:2d}:{:2d}:{:2d}]".format(cur_dt.hour, cur_dt.minute, cur_dt.second)
@@ -297,6 +303,12 @@ class MainWindows:
             self.insert_replacement()
             self.time += 1
             timer_2.start()
+        else:
+            miss_rate = self.pages_history.missTime / page_num
+            messagebox.showinfo('页面置换完成',
+                                '页面置换次数{}, 缺页次数{}, 缺页率{:.3f}'.format(page_num,
+                                                                     self.pages_history.missTime,
+                                                                     miss_rate))
 
     def my_timer(self):
         if self.case_timer < 1 or self.case_timer > 2:
