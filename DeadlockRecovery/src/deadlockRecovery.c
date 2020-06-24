@@ -159,6 +159,13 @@ void deadlockRecovery(ResourceAllocation *rA){
     }
 }
 
+void prtSearchProcess(ResourceAllocation *rA){
+    for (int i=0; i<INF; ++i){
+        if (rA.searchProcess[i][0] || rA.searchProcess[i][1] || rA.searchProcess[i][2] || rA.searchProcess[i][3])
+            printf("%d\t%d\t%d\t%d\n", rA.searchProcess[i][0],rA.searchProcess[i][1],rA.searchProcess[i][2],rA.searchProcess[i][3]);
+    }
+}
+
 void prtResourceAllocation(ResourceAllocation *rA){
     printf("proNum:%d",(*rA).proNum);
     printf("\nprocess:");

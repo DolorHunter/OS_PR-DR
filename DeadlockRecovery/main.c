@@ -15,9 +15,6 @@ int main(){
     printf("ANS2: 41203 / 41230\n");
     printf("ANS3: 0365142 / 3065142\n");
     printf("Deadlock Recovery Process\n");
-    for (int i=0; i<INF; ++i){
-        if (rA.searchProcess[i][0] || rA.searchProcess[i][1] || rA.searchProcess[i][2] || rA.searchProcess[i][3])
-            printf("%d\t%d\t%d\t%d\n", rA.searchProcess[i][0],rA.searchProcess[i][1],rA.searchProcess[i][2],rA.searchProcess[i][3]);
-    }
+    prtSearchProcess(&rA);
     return 0;
 }

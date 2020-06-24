@@ -33,6 +33,7 @@ int bestRes2Release(ResourceAllocation *rA);
 void addResProcess(ResourceAllocation *rA, int pro);
 void relProcess(ResourceAllocation *rA, int pro);
 void deadlockRecovery(ResourceAllocation *rA);
+void prtSearchProcess(ResourceAllocation *rA);
 void prtResourceAllocation(ResourceAllocation *rA);
 
 #endif //DEADLOCKRECOVERY_DEADLOCKRECOVERY_H
