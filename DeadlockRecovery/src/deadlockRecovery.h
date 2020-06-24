@@ -4,7 +4,6 @@
 #pragma once
 
 #include <stdio.h>
-#include <stdlib.h>
 
 #define MAX_PROCESS 8
 #define MAX_RESOURCE 8
@@ -21,11 +20,19 @@ typedef struct ResourceAllocation{
     int relProPos;                               // 可释放资源表位置
     int leftProNum;                              // 剩余进程数
     int resProcess[MAX_PROCESS];                 // 释放进程表
+    int searchProcess[INF][4];                   // 记录搜索历史
+    int seaProPos;                               // 记录搜索位置
 }ResourceAllocation;
 
+void initDeadlockRecovery(ResourceAllocation *rA);
+void initRelProcess(ResourceAllocation *rA);
+void genRelProcess(ResourceAllocation *rA);
+int isReleasable(ResourceAllocation *rA, int pro);
+void saveSearchProcess(ResourceAllocation *rA, int i, int applyRes, int relRes, int bestProcess);
 int bestRes2Release(ResourceAllocation *rA);
 void addResProcess(ResourceAllocation *rA, int pro);
 void relProcess(ResourceAllocation *rA, int pro);
 void deadlockRecovery(ResourceAllocation *rA);
+void prtResourceAllocation(ResourceAllocation *rA);
 
 #endif //DEADLOCKRECOVERY_DEADLOCKRECOVERY_H

@@ -1,5 +1,33 @@
 #include "deadlockRecovery.h"
 
+void initDeadlockRecovery(ResourceAllocation *rA){
+    (*rA).seaProPos = '\0';
+    (*rA).proNum = '\0';
+    (*rA).relProPos = '\0';
+    (*rA).leftProNum = '\0';
+    (*rA).seaProPos = '\0';
+    for (int i=0; i<MAX_PROCESS; ++i){
+        (*rA).process[i] = '\0';
+        (*rA).relProcess[i] = '\0';
+        (*rA).resProcess[i] = '\0';
+    }
+    for (int j=0; j<MAX_RESOURCE; ++j){
+        (*rA).resource[j] = '\0';
+        (*rA).relResource[j] = '\0';
+    }
+    for (int i=0; i<MAX_PROCESS; ++i){
+        for (int j=0; j<MAX_RESOURCE; ++j){
+            (*rA).resApply[i][j] = '\0';
+            (*rA).resAllocate[i][j] = '\0';
+        }
+    }
+    for (int i=0; i<INF; ++i){
+        for (int j=0; j<4; ++j){
+            (*rA).searchProcess[i][j] = '\0';
+        }
+    }
+}
+
 void initRelProcess(ResourceAllocation *rA){
     for (int i=0; i<MAX_PROCESS; ++i){
         (*rA).relProcess[i] = '\0';
@@ -54,6 +82,15 @@ int isReleasable(ResourceAllocation *rA, int pro){
     return 0;
 }
 
+void saveSearchProcess(ResourceAllocation *rA, int i, int applyRes, int relRes, int bestProcess){
+    int pos = (*rA).seaProPos;
+    (*rA).searchProcess[pos][0] = i;
+    (*rA).searchProcess[pos][1] = applyRes;
+    (*rA).searchProcess[pos][2] = relRes;
+    (*rA).searchProcess[pos][3] = bestProcess;
+    (*rA).seaProPos++;
+}
+
 int bestRes2Release(ResourceAllocation *rA){
     int bestProcess = 0;
     int applyRes = 0, minApplyRes = INF;
@@ -79,6 +116,7 @@ int bestRes2Release(ResourceAllocation *rA){
                     bestProcess = i;
                 }
             }
+            saveSearchProcess(rA, i, applyRes, relRes, bestProcess);
             applyRes = 0;
             relRes = 0;
         }
@@ -121,7 +159,33 @@ void deadlockRecovery(ResourceAllocation *rA){
     }
 }
 
+void prtResourceAllocation(ResourceAllocation *rA){
+    printf("proNum:%d",(*rA).proNum);
+    printf("\nprocess:");
+    for (int i=0; i<MAX_PROCESS; ++i){
+        printf("%d",(*rA).process[i]);
+    }
+    printf("\nresource:");
+    for (int j=0; j<MAX_RESOURCE; ++j){
+        printf("%d",(*rA).resource[j]);
+    }
+    printf("\nresApply:");
+    for (int i=0; i<MAX_PROCESS; ++i){
+        for (int j=0; j<MAX_RESOURCE; ++j){
+            printf("%d",(*rA).resApply[i][j]);
+        }
+        printf("\t");
+    }
+    printf("\nresAllocate:");
+    for (int i=0; i<MAX_PROCESS; ++i){
+        for (int j=0; j<MAX_RESOURCE; ++j){
+            printf("%d",(*rA).resAllocate[i][j]);
+        }
+        printf("\t");
+    }
+}
 
+/*
 int main(){
     ResourceAllocation rA = {4,
                              {1,1,1,1},
@@ -129,5 +193,10 @@ int main(){
                              {{1,0,0},{0,1,0},{0,0,0},{0,0,1}},
                              {{0,1,1},{1,0,0},{1,0,1},{0,1,0}}};
     deadlockRecovery(&rA);
-    printf("\nANS = 2013 / 2031");
+    printf("\nANS = 2013 / 2031\n");
+    for (int i=0; i<INF; ++i){
+        if (rA.searchProcess[i][0] || rA.searchProcess[i][1] || rA.searchProcess[i][2] || rA.searchProcess[i][3])
+            printf("%d\t%d\t%d\t%d\n", rA.searchProcess[i][0],rA.searchProcess[i][1],rA.searchProcess[i][2],rA.searchProcess[i][3]);
+    }
 }
+*/
