@@ -70,6 +70,7 @@ int bestRes2Release(ResourceAllocation *rA){
             }
             if (applyRes < minApplyRes){
                 minApplyRes = applyRes;
+                maxRelRes = relRes;
                 bestProcess = i;
             }
             else if (applyRes == minApplyRes){
@@ -128,4 +129,5 @@ int main(){
                              {{1,0,0},{0,1,0},{0,0,0},{0,0,1}},
                              {{0,1,1},{1,0,0},{1,0,1},{0,1,0}}};
     deadlockRecovery(&rA);
+    printf("\nANS = 2013 / 2031");
 }

@@ -16,7 +16,7 @@ typedef struct ResourceAllocation{
     int resource[MAX_RESOURCE];                  // 资源表
     int resApply[MAX_PROCESS][MAX_RESOURCE];     // 资源申请表
     int resAllocate[MAX_PROCESS][MAX_RESOURCE];  // 资源分配表
-    int relResource[MAX_RESOURCE];                // 可释放资源表
+    int relResource[MAX_RESOURCE];               // 可释放资源表
     int relProcess[MAX_PROCESS];                 // 可释放进程表
     int relProPos;                               // 可释放资源表位置
     int leftProNum;                              // 剩余进程数
