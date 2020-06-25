@@ -80,16 +80,17 @@ Deadlock Recovery Process
 
 ### DR demo
 
+![DR demo](https://res.cloudinary.com/dfb5w2ccj/image/upload/v1593051413/temp/2020-06-25_101554_arxvhe.png)
 
 ### DR log
 
-DR历时?天完成. 通过C99制作核心算法, Tkinter(Py)制作GUI. Ctypes(Py)作为胶水, 粘合C99编译后的.so文件与Py3.8. DR在PR后编写, 为第二次的Hybrid Language实践, 因此耗时较短.
+DR历时两天半左右完成. 通过C99制作核心算法, Tkinter(Py)制作GUI. Ctypes(Py)作为胶水, 粘合C99编译后的.so文件与Py3.8. DR在PR后编写, 为第二次的Hybrid Language实践, 因此耗时较短.
 
 时刻表:
 
 - 6.19, 6.22:构思算法框架;
 - 6.23~6.24: C主体, 算法, 文件, 部分GUI
-- 6.25~6.13: GUI细节处理, Ctypes连接语言, 简单测试
+- 6.24~6.25: GUI细节处理, Ctypes连接语言, 简单测试
 
 ## PagesReplacement
 
@@ -112,7 +113,7 @@ DR历时?天完成. 通过C99制作核心算法, Tkinter(Py)制作GUI. Ctypes(Py
 
 ### PR IO
 
-输入:
+输入
 
 ```plain
 5
