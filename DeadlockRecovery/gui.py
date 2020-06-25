@@ -38,8 +38,8 @@ class MainWindows:
 
         self.diagram_frame = Frame(master)
         self.diagram_frame.pack()
-        #self.diagram_label = Label(self.diagram_frame, text="前述资源分配图", width=50, height=50)
-        #self.diagram_label.grid(row=1, column=0)
+        self.diagram_label = Label(self.diagram_frame, text="前述资源分配图")
+        self.diagram_label.grid(row=1, column=0)
         self.diagram_text = Text(self.diagram_frame, width=50, height=10)
         self.diagram_text.grid(row=2, column=0)
 
@@ -76,11 +76,11 @@ class MainWindows:
         self.filename = ""
         self.init_search_process_tree()
         self.diagram_text.delete("1.0", "end")
+        self.diagram_label['image'] = ""
         deadlock_recovery.initDeadlockRecovery.restype = None
         deadlock_recovery.initDeadlockRecovery.argtypes = [POINTER(ResourceAllocation)]
         deadlock_recovery.initDeadlockRecovery(self.resource_allocation)
 
-    '''
     def show_diagram(self):
         global diagram
         self.filename = str(self.filename)
@@ -97,7 +97,6 @@ class MainWindows:
         else:
             print(diagram_num)
             messagebox.showwarning('错误!!', '图序号非法!!')
-        '''
 
     def show_diagram_file(self):
         values = (self.resource_allocation.proNum, '\n', *self.resource_allocation.process, '\n',
@@ -112,7 +111,7 @@ class MainWindows:
         file.readFile.argtypes = [POINTER(ResourceAllocation), c_char_p]
         c_filename = c_char_p(self.filename.encode('utf-8'))
         file.readFile(self.resource_allocation, c_filename)
-        #self.show_diagram()
+        self.show_diagram()
         self.show_diagram_file()
 
     def insert_search_process(self):
